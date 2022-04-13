@@ -838,65 +838,6 @@ public class Automation {
 //					false//visualize
 //			);
 
-			final JSONObject align3_jo = jo.getJSONObject("alignLayers3");
-			final RegularizedAffineLayerAlignment.Param param4 = new RegularizedAffineLayerAlignment.Param(
-					align3_jo.getInt("SIFTfdBins"),//SIFTfdBins,
-					align3_jo.getInt("SIFTfdSize"),//SIFTfdSize,
-					(float)align3_jo.getDouble("SIFTinitialSigma"),//SIFTinitialSigma,
-					align3_jo.getInt("SIFTmaxOctaveSize"),//SIFTmaxOctaveSize,
-					align3_jo.getInt("SIFTminOctaveSize"),//SIFTminOctaveSize,
-					align3_jo.getInt("SIFTsteps"),//SIFTsteps,
-					align3_jo.getBoolean("clearCache"),//clearCache,
-					maxNumThreads,//maxNumThreadsSift,
-					(float)align3_jo.getDouble("rod"),//rod,
-					align3_jo.getInt("desiredModelIndex"),//desiredModelIndex,
-					align3_jo.getInt("expectedModelIndex"),//expectedModelIndex,
-					(float)align3_jo.getDouble("identityTolerance"),//identityTolerance,
-					(float)align3_jo.getDouble("lambda"),//lambda,
-					(float)align3_jo.getDouble("maxEpsilon"),////maxEpsilon,
-					align3_jo.getInt("maxIterationsOptimize"),//maxIterationsOptimize,
-					align3_jo.getInt("maxNumFailures"),//maxNumFailures,
-					align3_jo.getInt("maxNumNeighbors"),//maxNumNeighbors,
-					maxNumThreads,//maxNumThreads,
-					align3_jo.getInt("maxPlateauwidthOptimize"),//maxPlateauwidthOptimize,
-					(float)align3_jo.getDouble("minInlierRatio"),//minInlierRatio,
-					align3_jo.getInt("minNumInliers"),//minNumInliers,
-					align3_jo.getBoolean("multipleHypotheses"),//multipleHypotheses,
-					align3_jo.getBoolean("widestSetOnly"),//widestSetOnly,
-					align3_jo.getBoolean("regularize"),//regularize,
-					align3_jo.getInt("regularizerIndex"),//regularizerIndex,
-					align3_jo.getBoolean("rejectIdentity"),//rejectIdentity,
-					false//visualize
-			);
-//			RegularizedAffineLayerAlignment.Param param4 = new RegularizedAffineLayerAlignment.Param(
-//					8,//SIFTfdBins,
-//					4,//SIFTfdSize,
-//					1.6f,//SIFTinitialSigma,
-//					1200,//SIFTmaxOctaveSize,
-//					400,//SIFTminOctaveSize,
-//					3,//SIFTsteps,
-//					true,//clearCache,
-//					maxNumThreads,//maxNumThreadsSift,
-//					0.92f,//rod,
-//					3,//desiredModelIndex,
-//					0,//expectedModelIndex,
-//					5.0f,//identityTolerance,
-//					0.01f,//lambda,
-//					50.0f,////maxEpsilon,
-//					1000,//maxIterationsOptimize,
-//					5,//maxNumFailures,
-//					5,//maxNumNeighbors,
-//					maxNumThreads,//maxNumThreads,
-//					200,//maxPlateauwidthOptimize,
-//					0.0f,//minInlierRatio,
-//					20,//minNumInliers,
-//					true,//multipleHypotheses,
-//					false,//widestSetOnly,
-//					true,//regularize,
-//					0,//regularizerIndex,
-//					false,//rejectIdentity,
-//					false//visualize
-//			);
 
 			final JSONObject input_pattern_jo = jo.getJSONObject("input");
 			final JSONArray input_patterns_ja = input_pattern_jo.getJSONArray("patterns");
@@ -1073,9 +1014,6 @@ public class Automation {
 					DistortionCorrectionTask.run(p, patches, patches.get(0), layer);
 			}
 
-			//montage all layers. least square, translation.
-			AlignTask.montageLayers(param, layerset.getLayers(), true, true, true, false, true);
-
 
 			//Align layers. least square
 			propagateTransformBefore = false;
@@ -1102,36 +1040,6 @@ public class Automation {
 			}
 
 			new RegularizedAffineLayerAlignment().exec(param3, layerset.getLayers(), new HashSet<Layer>(), emptyLayers, box, propagateTransformBefore, propagateTransformAfter, null);
-
-
-
-			// TODO Is another alignment required?  Don't think so, or is it?
-			//Align layers. least square
-			propagateTransformBefore = false;
-			propagateTransformAfter = false;
-
-			box = null;
-			emptyLayers = new HashSet< Layer >();
-			for ( final Iterator< Layer > it = layerset.getLayers().iterator(); it.hasNext(); )
-			{
-				/* remove empty layers */
-				final Layer la = it.next();
-				if ( !la.contains( Patch.class, true ) )
-				{
-					emptyLayers.add( la );
-				}
-				else
-				{
-					/* accumulate boxes */
-					if ( null == box ) // The first layer:
-						box = la.getMinimalBoundingBox( Patch.class, true );
-					else
-						box = box.union( la.getMinimalBoundingBox( Patch.class, true ) );
-				}
-			}
-
-			new RegularizedAffineLayerAlignment().exec(param4, layerset.getLayers(), new HashSet<Layer>(), emptyLayers, box, propagateTransformBefore, propagateTransformAfter, null);
-
 
 			//save trakem project
 			project.saveAs(strage_dir + File.separator + pname + "_trakem_proj.xml", true);
