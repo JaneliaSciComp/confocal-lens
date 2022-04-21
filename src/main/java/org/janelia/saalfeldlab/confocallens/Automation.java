@@ -1013,7 +1013,9 @@ public class Automation {
 				if (patches.size() > 0)
 					DistortionCorrectionTask.run(p, patches, patches.get(0), layer);
 			}
-
+			
+			//montage all layers. least square, translation.
+			AlignTask.montageLayers(param, layerset.getLayers(), true, true, true, false, true);
 
 			//Align layers. least square
 			propagateTransformBefore = false;
